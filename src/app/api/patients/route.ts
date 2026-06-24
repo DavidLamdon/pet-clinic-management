@@ -1,6 +1,7 @@
 import { dbConnect } from "@/lib/mongoose";
 import { Patient } from "@/models/Patient";
 import { patientSchema } from "@/lib/validation";
+import { z } from "zod";
 
 export const dynamic = "force-dynamic";
 
@@ -15,7 +16,10 @@ export async function POST(req: Request) {
   const body = await req.json();
   const parsed = patientSchema.safeParse(body);
   if (!parsed.success) {
-    return Response.json({ errors: parsed.error.flatten() }, { status: 400 });
+    return Response.json(
+      { errors: z.flattenError(parsed.error) },
+      { status: 400 },
+    );
   }
   const patient = await Patient.create(parsed.data);
   return Response.json(patient, { status: 201 });
