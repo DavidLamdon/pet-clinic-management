@@ -3,7 +3,7 @@ import styles from "./page.module.css";
 
 export default function Home() {
   return (
-    <div className={styles.page}>
+    <div className="text-3xl font-bold text-blue-600">
       <main className={styles.main}>
         <Image
           className={styles.logo}
