@@ -3,8 +3,6 @@ import { Patient } from "@/models/Patient";
 import { patientSchema } from "@/lib/validation";
 import { z } from "zod";
 
-export const dynamic = "force-dynamic";
-
 export async function GET() {
   await dbConnect();
   const patients = await Patient.find().sort({ createdAt: -1 }).lean();
