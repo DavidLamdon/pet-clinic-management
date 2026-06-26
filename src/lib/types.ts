@@ -10,3 +10,11 @@ export interface Patient {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface PatientFormValues {
+  name: string;
+  phone: string;
+  petName: string;
+  petBirthDate: string;
+  petType: PetType;
+}

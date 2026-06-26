@@ -12,7 +12,7 @@ export function PetTypeFilter<T>({ column }: { column: Column<T, unknown> }) {
     const next = selected.includes(type)
       ? selected.filter((t) => t !== type)
       : [...selected, type];
-    column.setFilterValue(next.length ? next : undefined); // пусто → снять фильтр
+    column.setFilterValue(next.length ? next : undefined);
   };
 
   return (

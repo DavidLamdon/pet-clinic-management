@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -16,6 +16,7 @@ import { Patient } from "@/lib/types";
 import { ColumnSearch } from "@/components/ColumnSearch";
 import { PetTypeFilter } from "@/components/PetTypeFilter";
 import { calculateAge } from "@/lib/utils";
+import { Pencil } from "lucide-react";
 
 const columnHelper = createColumnHelper<Patient>();
 
@@ -24,34 +25,57 @@ const petTypeFilterFn: FilterFn<Patient> = (row, columnId, value: string[]) => {
   return value.includes(row.getValue(columnId));
 };
 
-const columns = [
-  columnHelper.accessor("name", {
-    header: "Name",
-    filterFn: "includesString",
-  }),
-  columnHelper.accessor("phone", {
-    header: "Phone",
-    enableSorting: false,
-    enableColumnFilter: false,
-  }),
-  columnHelper.accessor("petName", {
-    header: "Pet Name",
-    filterFn: "includesString",
-  }),
-  columnHelper.accessor("petBirthDate", {
-    header: "Pet Age",
-    cell: (info) => calculateAge(info.getValue()),
-    enableSorting: false,
-    enableColumnFilter: false,
-  }),
-  columnHelper.accessor("petType", {
-    header: "Pet Type",
-    enableSorting: false,
-    filterFn: petTypeFilterFn,
-  }),
-];
+export function PatientsTable({
+  patients,
+  onEdit,
+}: {
+  patients: Patient[];
+  onEdit: (p: Patient) => void;
+}) {
+  const columns = useMemo(
+    () => [
+      columnHelper.accessor("name", {
+        header: "Name",
+        filterFn: "includesString",
+      }),
+      columnHelper.accessor("phone", {
+        header: "Phone",
+        enableSorting: false,
+        enableColumnFilter: false,
+      }),
+      columnHelper.accessor("petName", {
+        header: "Pet Name",
+        filterFn: "includesString",
+      }),
+      columnHelper.accessor("petBirthDate", {
+        header: "Pet Age",
+        cell: (info) => calculateAge(info.getValue()),
+        enableSorting: false,
+        enableColumnFilter: false,
+      }),
+      columnHelper.accessor("petType", {
+        header: "Pet Type",
+        enableSorting: false,
+        filterFn: petTypeFilterFn,
+      }),
+      columnHelper.display({
+        id: "actions",
+        header: "",
+        cell: (info) => (
+          <button
+            type="button"
+            onClick={() => onEdit(info.row.original)}
+            aria-label="Edit patient"
+            className="text-gray-600 hover:text-gray-900"
+          >
+            <Pencil size={16} />
+          </button>
+        ),
+      }),
+    ],
+    [onEdit],
+  );
 
-export function PatientsTable({ patients }: { patients: Patient[] }) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
