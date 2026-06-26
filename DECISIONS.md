@@ -196,3 +196,5 @@ Open for confirmation:
 
 Phone number format — a loose validation is used deliberately; a canonical format
 can be enforced if required.
+
+Tokenized only the semantic colors (brand, danger) that were actually used; I left the neutral palette at Tailwind's defaults to avoid creating unused tokens."

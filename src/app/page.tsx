@@ -35,7 +35,7 @@ export default function Home() {
 
   if (isLoading) return <p className="p-8">Loading…</p>;
   if (isError)
-    return <p className="p-8 text-red-600">Failed to load patients</p>;
+    return <p className="p-8 text-danger">Failed to load patients</p>;
 
   return (
     <main className="p-8">
@@ -43,7 +43,7 @@ export default function Home() {
       <button
         type="button"
         onClick={handleAdd}
-        className="mt-4 flex items-center gap-1 text-blue-600"
+        className="mt-4 flex items-center gap-1 text-brand"
       >
         <Plus size={18} /> Add new patient
       </button>

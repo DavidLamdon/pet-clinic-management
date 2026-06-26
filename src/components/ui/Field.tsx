@@ -11,7 +11,7 @@ export function Field({
     <div>
       <label className="block text-sm mb-1">{label}</label>
       {children}
-      {error && <p className="text-red-600 text-xs mt-1">{error}</p>}
+      {error && <p className="text-danger text-xs mt-1">{error}</p>}
     </div>
   );
 }
