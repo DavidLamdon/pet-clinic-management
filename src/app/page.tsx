@@ -7,6 +7,7 @@ import { getPatients } from "@/lib/api/patients";
 import { PatientsTable } from "@/components/PatientsTable";
 import { PatientModal } from "@/components/PatientModal";
 import { Patient } from "@/lib/types";
+import { PATIENTS_QUERY_KEY } from "@/lib/constants";
 
 type ModalState = { mode: "add" } | { mode: "edit"; patient: Patient } | null;
 
@@ -16,7 +17,7 @@ export default function Home() {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["patients"],
+    queryKey: [PATIENTS_QUERY_KEY],
     queryFn: getPatients,
   });
   const [modal, setModal] = useState<ModalState>(null);

@@ -8,3 +8,5 @@ export const MODAL_MODES = {
 } as const;
 
 export type ModalMode = (typeof MODAL_MODES)[keyof typeof MODAL_MODES];
+
+export const PATIENTS_QUERY_KEY = "patients";

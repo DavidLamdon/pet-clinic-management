@@ -12,6 +12,10 @@ module.exports = {
           DEFAULT: "#dc2626",
           hover: "#991b1b",
         },
+        muted: {
+          DEFAULT: "#6b7280",
+          dark: "#4b5563",
+        },
       },
     },
   },

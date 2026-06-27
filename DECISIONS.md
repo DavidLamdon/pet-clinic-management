@@ -197,4 +197,6 @@ Open for confirmation:
 Phone number format — a loose validation is used deliberately; a canonical format
 can be enforced if required.
 
-Tokenized only the semantic colors (brand, danger) that were actually used; I left the neutral palette at Tailwind's defaults to avoid creating unused tokens."
+Tokenized only the semantic colors (brand, danger, muted) that were actually used; I left the neutral palette at Tailwind's defaults to avoid creating unused tokens."
+
+On mobile, sorting has been moved to the Sort by dropdown instead of clickable table headers. The spec function is retained, but the implementation has been adapted to the lack of a table header on a narrow screen.

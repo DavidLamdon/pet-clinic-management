@@ -6,11 +6,12 @@ import {
   updatePatient,
   deletePatient,
 } from "@/lib/api/patients";
+import { PATIENTS_QUERY_KEY } from "../constants";
 
 export function usePatientMutations() {
   const queryClient = useQueryClient();
   const invalidate = () =>
-    queryClient.invalidateQueries({ queryKey: ["patients"] });
+    queryClient.invalidateQueries({ queryKey: [PATIENTS_QUERY_KEY] });
 
   const create = useMutation({
     mutationFn: createPatient,

@@ -13,10 +13,10 @@ import {
   type FilterFn,
 } from "@tanstack/react-table";
 import { Patient } from "@/lib/types";
-import { ColumnSearch } from "@/components/ColumnSearch";
-import { PetTypeFilter } from "@/components/PetTypeFilter";
 import { calculateAge } from "@/lib/utils";
-import { Pencil } from "lucide-react";
+import { PatientCard } from "./PatientCard";
+import { PatientsControls } from "./PatientsControls";
+import { EditButton } from "./EditButton";
 
 const columnHelper = createColumnHelper<Patient>();
 
@@ -62,14 +62,7 @@ export function PatientsTable({
         id: "actions",
         header: "",
         cell: (info) => (
-          <button
-            type="button"
-            onClick={() => onEdit(info.row.original)}
-            aria-label="Edit patient"
-            className="text-gray-600 hover:text-gray-900"
-          >
-            <Pencil size={16} />
-          </button>
+          <EditButton onEdit={onEdit} patient={info.row.original} />
         ),
       }),
     ],
@@ -93,54 +86,56 @@ export function PatientsTable({
   const headerGroup = table.getHeaderGroups()[0];
 
   return (
-    <table className="w-full border-collapse">
-      <thead>
-        <tr className="text-left border-b">
-          {headerGroup.headers.map((header) => (
-            <th key={header.id} className="p-2">
-              {header.column.getCanSort() ? (
-                <button
-                  type="button"
-                  onClick={header.column.getToggleSortingHandler()}
-                  className="flex items-center gap-1"
-                >
-                  {flexRender(
+    <div>
+      <PatientsControls table={table} />
+
+      <table className="w-full border-collapse hidden md:table">
+        <thead>
+          <tr className="text-left border-b">
+            {headerGroup.headers.map((header) => (
+              <th key={header.id} className="p-2">
+                {header.column.getCanSort() ? (
+                  <button
+                    type="button"
+                    onClick={header.column.getToggleSortingHandler()}
+                    className="flex items-center gap-1"
+                  >
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    )}
+                    {{ asc: "↑", desc: "↓" }[
+                      header.column.getIsSorted() as string
+                    ] ?? "↕"}
+                  </button>
+                ) : (
+                  flexRender(
                     header.column.columnDef.header,
                     header.getContext(),
-                  )}
-                  {{ asc: "↑", desc: "↓" }[
-                    header.column.getIsSorted() as string
-                  ] ?? "↕"}
-                </button>
-              ) : (
-                flexRender(header.column.columnDef.header, header.getContext())
-              )}
-            </th>
-          ))}
-        </tr>
-        <tr className="border-b">
-          {headerGroup.headers.map((header) => (
-            <th key={header.id} className="p-2 align-top">
-              {header.column.id === "name" || header.column.id === "petName" ? (
-                <ColumnSearch column={header.column} placeholder="Search…" />
-              ) : header.column.id === "petType" ? (
-                <PetTypeFilter column={header.column} />
-              ) : null}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {table.getRowModel().rows.map((row) => (
-          <tr key={row.id} className="border-b">
-            {row.getVisibleCells().map((cell) => (
-              <td key={cell.id} className="p-2">
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-              </td>
+                  )
+                )}
+              </th>
             ))}
           </tr>
+        </thead>
+        <tbody>
+          {table.getRowModel().rows.map((row) => (
+            <tr key={row.id} className="border-b">
+              {row.getVisibleCells().map((cell) => (
+                <td key={cell.id} className="p-2">
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <div className="flex flex-col gap-3 md:hidden">
+        {table.getRowModel().rows.map((row) => (
+          <PatientCard key={row.id} patient={row.original} onEdit={onEdit} />
         ))}
-      </tbody>
-    </table>
+      </div>
+    </div>
   );
 }
