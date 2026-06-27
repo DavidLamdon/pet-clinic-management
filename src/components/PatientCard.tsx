@@ -15,9 +15,9 @@ export function PatientCard({
     <div className="border rounded-lg p-4 flex justify-between items-start">
       <div className="space-y-1">
         <p className="font-medium">{patient.name}</p>
-        <p className="text-sm text-muted-dark">{patient.phone}</p>
+        <p className="text-sm text-muted-dark">Phone: {patient.phone}</p>
         <p className="text-sm">
-          <span className="text-muted">Pet:</span> {patient.petName} (
+          <span className="text-muted">Pet Name:</span> {patient.petName} (
           {patient.petType})
         </p>
         <p className="text-sm">
