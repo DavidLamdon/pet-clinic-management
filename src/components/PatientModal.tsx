@@ -120,6 +120,7 @@ export function PatientModal({ mode, patient, onClose }: Props) {
           <Field label="Pet Birth Date" error={errors.petBirthDate}>
             <input
               type="date"
+              max={new Date().toISOString().split("T")[0]}
               className={inputClass}
               value={values.petBirthDate}
               onChange={(e) => setField("petBirthDate", e.target.value)}

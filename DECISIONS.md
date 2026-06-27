@@ -53,7 +53,7 @@ Data model
 Age is derived, never stored
 
 The table shows Pet Age; the form collects Pet Birth Date. The database stores only
-petBirthDate; age is computed from it (lib/utils.ts → calculateAge) at render
+petBirthDate; age is computed from it (lib/utils.ts -> calculateAge) at render
 time on the client. Storing age would make it stale the moment it is written —
 birth date is the single source of truth. The calculation accounts for whether the
 birthday has occurred yet this year, not just the year difference.
@@ -63,7 +63,9 @@ Pet type as a single source of truth
 PET_TYPES is defined once in lib/constants.ts with as const and consumed by
 the Mongoose enum, the Zod enum, the form radios, and the table filter. as const
 preserves the literal union type and satisfies Zod's z.enum. Adding a type later
-is a one-line change in one place.
+is a one-line change in one place. The modal's two modes are handled the same way
+via a MODAL_MODES constant rather than a TypeScript enum, which avoids emitting
+a runtime object and keeps the values type-safe.
 
 API
 
@@ -95,8 +97,8 @@ lib/api/patients.ts — pure transport functions (fetch), unaware of React Query
 React Query — caching and request state layered on top of those functions.
 Components — read data through hooks, never call transport functions directly.
 
-Dependencies point one direction: component → React Query → API function → route
-handler → Mongo. Mutations (usePatientMutations) invalidate the ["patients"]
+Dependencies point one direction: component -> React Query -> API function -> route
+handler -> Mongo. Mutations (usePatientMutations) invalidate the ["patients"]
 query on success, so the server stays the source of truth and the table refreshes
 itself rather than being patched by hand.
 
@@ -115,6 +117,14 @@ with two variants." Delete lives inside the Edit modal (trash icon), matching th
 spec. The form validates with the shared patientSchema before sending, giving
 immediate feedback while the server re-validates as the real guard.
 
+Responsive: table becomes cards
+
+Below the md breakpoint the table collapses to a card list. Both views render
+from the same TanStack model, so search, sort, and filter behave identically on
+mobile. Sorting is exposed through a "Sort by" dropdown on mobile instead of
+clickable table headers: the spec's sort capability is retained, but the
+implementation is adapted to the absence of a table header on a narrow screen.
+
 Stable references for the table
 
 TanStack compares columns by reference; recreating the array each render causes
@@ -128,16 +138,20 @@ would be cargo-cult memoization.
 Extracting components only on real duplication
 
 Field was extracted to components/ui because five form fields shared identical
-markup. A Button component was considered and declined — the buttons in the app
-differ, and there is no real duplication yet. Components are extracted when
-duplication exists, not preemptively.
+markup. EditButton was extracted to components (not ui, since it is
+domain-aware — it takes a Patient) because the same pencil action was duplicated
+in the table and the cards. A Button component was considered and declined — the
+buttons in the app differ, and there is no real duplication yet. Components are
+extracted when duplication of the same intent exists, not preemptively.
 
-Phone validation kept loose
+Color tokens
 
-The spec shows several phone formats (052-1123451, 03-4204204), so a strict
-single-format regex would reject valid numbers. The Zod rule allows digits, spaces,
-and - + ( ) within a sane length, rejecting obvious garbage without enforcing one
-shape. See open questions.
+Only the semantic colors actually used in the UI were tokenized in
+tailwind.config.js: brand (primary actions, links), danger (delete and
+validation errors), and muted (a recurring grey used in 6+ files). The rest of
+the neutral palette is left at Tailwind's defaults to avoid defining tokens that
+centralize nothing. The intent is for the config to hold genuine design constants,
+not to mirror the default greyscale.
 
 Tooling & deployment
 
@@ -157,15 +171,13 @@ Hosted on Vercel (native Next.js) with MongoDB Atlas. MONGODB_URI is set as a
 Vercel environment variable and is never committed. Atlas Network Access is open to
 0.0.0.0/0 because Vercel functions have no static egress IP on the free tier —
 acceptable for this exercise, but in production this would be restricted to known
-ranges or a private endpoint. Deployment was set up on day one (with a DB
-health-check route) to validate the full client → API → Atlas chain before building
-features, rather than discovering deploy issues at the end.
+ranges or a private endpoint. Deployment was validated early — on day one, with a
+temporary DB health-check route (since removed) — to confirm the full
+client -> API -> Atlas chain worked before building features, rather than
+discovering deploy issues at the end.
 
 Challenges
 
-Atlas "bad auth" on first connect — the connection string still contained the
-<password> placeholder. Regenerating an alphanumeric password and substituting
-it (avoiding URL-encoding pitfalls with special characters) resolved it.
 Broken @/ imports after moving to src/ — the tsconfig path alias still
 pointed at the root, and one import had picked up a stray src segment
 (@/src/lib/...). Fixed by pointing @/_ at ./src/_ and using @/lib/...
@@ -191,12 +203,4 @@ filter (checkboxes).
 Sort and per-column search apply only to Name and Pet Name; the multi-select
 filter applies only to Pet Type.
 The Edit modal saves the full record, which drives the full-document PUT.
-
-Open for confirmation:
-
-Phone number format — a loose validation is used deliberately; a canonical format
-can be enforced if required.
-
-Tokenized only the semantic colors (brand, danger, muted) that were actually used; I left the neutral palette at Tailwind's defaults to avoid creating unused tokens."
-
-On mobile, sorting has been moved to the Sort by dropdown instead of clickable table headers. The spec function is retained, but the implementation has been adapted to the lack of a table header on a narrow screen.
+Phone and birth date validation. Birth date is constrained to today or earlier (a pet can't be born in the future), enforced both on the <input max> and in the Zod schema. Phone is validated as 9–10 digits with optional dashes — broad enough to accept the mobile and landline formats shown in the spec (052-1123451, 03-4204204) without enforcing a single rigid pattern that would reject valid numbers. Full locale-aware validation (e.g. libphonenumber) was considered out of scope.
