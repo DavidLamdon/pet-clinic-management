@@ -208,3 +208,5 @@ Phone and birth date validation. Birth date is constrained to today or earlier (
 After conversation with CEO considered improving UI of table and changed brand colors and added aditional styling
 
 Added sorting by Pet Age (beyond the spec). The spec shows sort only on Name and Pet Name, but sorting by age is a natural expectation in a patient list. Since age is derived, the column sorts via a custom sortingFn that compares computed age rather than the raw birth date, so the arrow direction matches what the user sees.
+
+Added phone search (beyond the spec). Search is normalized — both the query and stored value are reduced to digits before matching — so a query like 052-123 finds 0521234567 regardless of formatting.

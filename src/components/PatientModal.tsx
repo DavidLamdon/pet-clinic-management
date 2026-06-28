@@ -9,6 +9,7 @@ import { usePatientMutations } from "@/lib/hooks/usePatientMutations";
 import { Field } from "./ui/Field";
 import { Modal } from "./ui/Modal";
 import { ConfirmModal } from "./ui/ConfirmModal";
+import { Button } from "./ui/Button";
 
 const inputClass = "w-full border rounded px-2 py-1 text-sm";
 
@@ -145,22 +146,12 @@ export function PatientModal({ mode, patient, onClose }: Props) {
       </div>
 
       <div className="flex gap-2 mt-6">
-        <button
-          type="button"
-          onClick={handleSubmit}
-          disabled={isPending}
-          className="px-4 py-2 bg-brand hover:bg-brand-hover text-white rounded disabled:opacity-50"
-        >
+        <Button variant="primary" onClick={handleSubmit} disabled={isPending}>
           {mode === MODAL_MODES.Add ? "Add" : "Save"}
-        </button>
-        <button
-          type="button"
-          onClick={onClose}
-          disabled={isPending}
-          className="px-4 py-2 border rounded"
-        >
+        </Button>
+        <Button onClick={onClose} disabled={isPending}>
           Close
-        </button>
+        </Button>
       </div>
 
       {confirmingDelete && patient && (

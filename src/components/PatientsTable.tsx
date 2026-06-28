@@ -25,6 +25,13 @@ const petTypeFilterFn: FilterFn<Patient> = (row, columnId, value: string[]) => {
   return value.includes(row.getValue(columnId));
 };
 
+const phoneFilterFn: FilterFn<Patient> = (row, columnId, value: string) => {
+  const digits = (s: string) => s.replace(/\D/g, "");
+  const query = digits(value);
+  if (!query) return true;
+  return digits(row.getValue(columnId) as string).includes(query);
+};
+
 export function PatientsTable({
   patients,
   onEdit,
@@ -41,7 +48,7 @@ export function PatientsTable({
       columnHelper.accessor("phone", {
         header: "Phone",
         enableSorting: false,
-        enableColumnFilter: false,
+        filterFn: phoneFilterFn,
       }),
       columnHelper.accessor("petName", {
         header: "Pet Name",
