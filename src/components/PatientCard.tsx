@@ -12,7 +12,7 @@ export function PatientCard({
   onEdit: (p: Patient) => void;
 }) {
   return (
-    <div className="border rounded-lg p-4 flex justify-between items-start">
+    <div className="border rounded-lg p-4 flex justify-between items-start bg-white shadow-sm hover:shadow transition-shadow">
       <div className="space-y-1">
         <p className="font-medium">{patient.name}</p>
         <p className="text-sm text-muted-dark">Phone: {patient.phone}</p>

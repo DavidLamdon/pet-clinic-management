@@ -5,8 +5,8 @@ module.exports = {
     extend: {
       colors: {
         brand: {
-          DEFAULT: "#2563eb",
-          hover: "#1d4ed8",
+          DEFAULT: "#0d9488",
+          hover: "#0f766e",
         },
         danger: {
           DEFAULT: "#dc2626",

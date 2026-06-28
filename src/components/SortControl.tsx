@@ -6,6 +6,7 @@ import { Patient } from "@/lib/types";
 const SORTABLE: { id: string; label: string }[] = [
   { id: "name", label: "Name" },
   { id: "petName", label: "Pet Name" },
+  { id: "petBirthDate", label: "Pet Age" },
 ];
 
 export function SortControl({ table }: { table: Table<Patient> }) {

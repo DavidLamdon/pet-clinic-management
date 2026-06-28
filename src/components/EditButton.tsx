@@ -13,7 +13,7 @@ export function EditButton({
       type="button"
       onClick={() => onEdit(patient)}
       aria-label="Edit patient"
-      className="text-muted-dark hover:text-gray-900"
+      className="text-muted-dark"
     >
       <Pencil size={16} />
     </button>

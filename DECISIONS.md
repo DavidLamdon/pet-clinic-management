@@ -204,3 +204,7 @@ Sort and per-column search apply only to Name and Pet Name; the multi-select
 filter applies only to Pet Type.
 The Edit modal saves the full record, which drives the full-document PUT.
 Phone and birth date validation. Birth date is constrained to today or earlier (a pet can't be born in the future), enforced both on the <input max> and in the Zod schema. Phone is validated as 9–10 digits with optional dashes — broad enough to accept the mobile and landline formats shown in the spec (052-1123451, 03-4204204) without enforcing a single rigid pattern that would reject valid numbers. Full locale-aware validation (e.g. libphonenumber) was considered out of scope.
+
+After conversation with CEO considered improving UI of table and changed brand colors and added aditional styling
+
+Added sorting by Pet Age (beyond the spec). The spec shows sort only on Name and Pet Name, but sorting by age is a natural expectation in a patient list. Since age is derived, the column sorts via a custom sortingFn that compares computed age rather than the raw birth date, so the arrow direction matches what the user sees.

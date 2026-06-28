@@ -50,7 +50,12 @@ export function PatientsTable({
       columnHelper.accessor("petBirthDate", {
         header: "Pet Age",
         cell: (info) => calculateAge(info.getValue()),
-        enableSorting: false,
+        enableSorting: true,
+        sortingFn: (rowA, rowB) => {
+          const ageA = calculateAge(rowA.original.petBirthDate);
+          const ageB = calculateAge(rowB.original.petBirthDate);
+          return ageA - ageB;
+        },
         enableColumnFilter: false,
       }),
       columnHelper.accessor("petType", {
@@ -89,11 +94,22 @@ export function PatientsTable({
     <div>
       <PatientsControls table={table} />
 
-      <table className="w-full border-collapse hidden md:table">
+      <table className="w-full border-collapse table-fixed hidden md:table">
+        <colgroup>
+          <col className="w-[22%]" />
+          <col className="w-[18%]" />
+          <col className="w-[22%]" />
+          <col className="w-[12%]" />
+          <col className="w-[18%]" />
+          <col className="w-[8%]" />
+        </colgroup>
         <thead>
-          <tr className="text-left border-b">
+          <tr className="border-b bg-gray-50 text-left">
             {headerGroup.headers.map((header) => (
-              <th key={header.id} className="p-2">
+              <th
+                key={header.id}
+                className="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-muted"
+              >
                 {header.column.getCanSort() ? (
                   <button
                     type="button"
@@ -120,9 +136,12 @@ export function PatientsTable({
         </thead>
         <tbody>
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="border-b">
+            <tr
+              key={row.id}
+              className="border-b hover:bg-gray-50 transition-colors"
+            >
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="p-2">
+                <td key={cell.id} className="px-3 py-3 truncate">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}

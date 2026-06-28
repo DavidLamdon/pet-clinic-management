@@ -1,12 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Column } from "@tanstack/react-table";
 import { PET_TYPES } from "@/lib/constants";
 
 export function PetTypeFilter<T>({ column }: { column: Column<T, unknown> }) {
   const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
   const selected = (column.getFilterValue() as string[]) ?? [];
+  const hasSelection = selected.length > 0;
+
+  useEffect(() => {
+    if (!open) return;
+    const onMouseDown = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onMouseDown);
+    return () => document.removeEventListener("mousedown", onMouseDown);
+  }, [open]);
 
   const toggle = (type: string) => {
     const next = selected.includes(type)
@@ -16,13 +29,15 @@ export function PetTypeFilter<T>({ column }: { column: Column<T, unknown> }) {
   };
 
   return (
-    <div className="relative font-normal">
+    <div className="relative font-normal" ref={ref}>
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="border rounded px-2 py-1 text-sm w-full text-left"
+        className={`w-full border rounded px-2 py-1 text-sm text-left ${
+          open || hasSelection ? "border-brand ring-1 ring-brand" : ""
+        }`}
       >
-        {selected.length ? selected.join(", ") : "All types"} ▾
+        {hasSelection ? selected.join(", ") : "All types"} ▾
       </button>
       {open && (
         <div className="absolute z-10 mt-1 bg-white border rounded shadow p-2 space-y-1">

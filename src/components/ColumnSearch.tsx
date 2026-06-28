@@ -15,7 +15,7 @@ export function ColumnSearch<T>({
       value={value}
       onChange={(e) => column.setFilterValue(e.target.value)}
       placeholder={placeholder ?? "Search…"}
-      className="w-full border rounded px-2 py-1 text-sm font-normal"
+      className="w-full border rounded px-2 py-1 text-sm font-normal focus:border-brand focus:ring-1 focus:ring-brand focus:outline-none"
     />
   );
 }

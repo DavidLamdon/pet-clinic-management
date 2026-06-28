@@ -7,7 +7,6 @@ import { getPatients } from "@/lib/api/patients";
 import { PatientsTable } from "@/components/PatientsTable";
 import { PatientModal } from "@/components/PatientModal";
 import { Patient } from "@/lib/types";
-import { PATIENTS_QUERY_KEY } from "@/lib/constants";
 
 type ModalState = { mode: "add" } | { mode: "edit"; patient: Patient } | null;
 
@@ -17,7 +16,7 @@ export default function Home() {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: [PATIENTS_QUERY_KEY],
+    queryKey: ["patients"],
     queryFn: getPatients,
   });
   const [modal, setModal] = useState<ModalState>(null);
@@ -25,29 +24,53 @@ export default function Home() {
   const handleEdit = useCallback((patient: Patient) => {
     setModal({ mode: "edit", patient });
   }, []);
+  const handleAdd = useCallback(() => setModal({ mode: "add" }), []);
+  const handleClose = useCallback(() => setModal(null), []);
 
-  const handleAdd = () => {
-    setModal({ mode: "add" });
-  };
-
-  const handleClose = () => {
-    setModal(null);
-  };
-
-  if (isLoading) return <p className="p-8">Loading…</p>;
-  if (isError)
-    return <p className="p-8 text-danger">Failed to load patients</p>;
+  const isEmpty = !isLoading && !isError && (patients?.length ?? 0) === 0;
 
   return (
-    <main className="p-8">
-      <PatientsTable patients={patients ?? []} onEdit={handleEdit} />
-      <button
-        type="button"
-        onClick={handleAdd}
-        className="mt-4 flex items-center gap-1 text-brand"
-      >
-        <Plus size={18} /> Add new patient
-      </button>
+    <main className="min-h-screen bg-gray-50 px-4 py-8">
+      <div className="mx-auto max-w-5xl">
+        <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
+          <div className="border-b border-gray-200 px-6 py-4">
+            <h1 className="text-2xl font-semibold text-gray-900">Pet Clinic</h1>
+            <p className="text-sm text-muted">Patient management</p>
+          </div>
+
+          <div className="p-6">
+            {isLoading ? (
+              <p className="py-12 text-center text-muted">Loading…</p>
+            ) : isError ? (
+              <p className="py-12 text-center text-danger">
+                Failed to load patients
+              </p>
+            ) : isEmpty ? (
+              <div className="py-12 text-center">
+                <p className="mb-4 text-muted">No patients yet.</p>
+                <button
+                  type="button"
+                  onClick={handleAdd}
+                  className="inline-flex items-center gap-1 rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-hover"
+                >
+                  <Plus size={18} /> Add your first patient
+                </button>
+              </div>
+            ) : (
+              <>
+                <PatientsTable patients={patients ?? []} onEdit={handleEdit} />
+                <button
+                  type="button"
+                  onClick={handleAdd}
+                  className="mt-4 inline-flex items-center gap-1 rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-hover"
+                >
+                  <Plus size={18} /> Add new patient
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
 
       {modal && (
         <PatientModal
